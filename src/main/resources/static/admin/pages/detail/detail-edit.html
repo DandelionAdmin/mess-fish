@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>修改站点</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../css/oksub.css">
+    <script type="text/javascript" src="../../lib/loading/okLoading.js"></script>
+    <script type="text/javascript" src="../../js/api.js"></script>
+    <script type="text/javascript" src="../../js/time.js"></script>
+</head>
+<body>
+<div class="ok-body">
+    <!--form表单-->
+    <form class="layui-form ok-form" lay-filter="filter">
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站名字</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="id" placeholder="请输入id" autocomplete="off" class="layui-input"
+                       lay-verify="required" readonly>
+                <input type="text" name="name" placeholder="请输入引擎名字" autocomplete="off" class="layui-input"
+                       lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站链接</label>
+            <div class="layui-input-block">
+                <input type="text" name="url" placeholder="请输入搜索链接" autocomplete="off" class="layui-input"
+                       lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站图标</label>
+            <div class="layui-input-block">
+                <input type="text" name="icon" placeholder="请输入引擎图标" autocomplete="off" class="layui-input"
+                       lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" id="checkbox" lay-skin="switch" lay-filter="statusSwitch" lay-text="开启|关闭">
+                <input type="hidden" value="0" id="status" name="status" autocomplete="off" class="layui-input"
+                       lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">网站类型</label>
+            <div class="layui-input-inline">
+                <select id="parent_id" lay-verify="required" lay-search="">
+                    <option value="">选择网站类型</option>
+                </select>
+            </div>
+            <input type="hidden" id="typeId" name="typeId" placeholder="请输入课程编号" autocomplete="off" class="layui-input"
+                   lay-verify="required">
+            <input type="hidden" id="typeName" name="typeName" placeholder="请输入课程名字" autocomplete="off"
+                   class="layui-input" lay-verify="required">
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="edit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--js逻辑-->
+<script src="../../lib/layui/layui.js"></script>
+<script>
+    layui.use(["element", "jquery", "form", "laydate", "okLayer", "okUtils", "upload"], function () {
+        let form = layui.form;
+        let okLayer = layui.okLayer;
+        let okUtils = layui.okUtils;
+        let upload = layui.upload;
+        let $ = layui.jquery;
+        let id = getQueryString("id");
+
+        okUtils.ajax("/api/website/type/select", "get", {}, true).done(function (response) {
+            let data = response.data;
+            // option进行拼接
+            var option = '';
+
+            console.log("select 列表：", response);
+
+            for (var i in data) {
+                option += "<option value='" + data[i]['id'] + "'>" + data[i]['name'] + "</option>";
+            }
+            // 给select节点追加
+            $('#parent_id').append(option);
+            // form渲染
+            form.render('select')
+        }).fail(function (error) {
+            console.log(error)
+        });
+
+        console.log("id", id);
+        okUtils.ajax("/api/website/detail/" + id, "get", {}, true).done(function (response) {
+            let data = response.data;
+            let flag = data.status === 0;
+            let selected_id = data.typeId;
+            console.log("详情", data, "flag", flag, "selected_id:", selected_id);
+            okLoading.close();
+            selected(selected_id)
+            $("#checkbox").prop("checked", flag);//false 为取消选中
+            form.val("filter", response.data);
+        }).fail(function (error) {
+            console.log(error)
+        });
+
+        function selected(selected_id) {
+            $("#parent_id").each(function () {
+                // this代表的是<option></option>，对option再进行遍历
+                $(this).children("option").each(function () {
+                    // 判断需要对那个选项进行回显
+                    if (this.value == selected_id) {
+                        console.log($(this).text());
+                        // 进行回显
+                        $(this).attr("selected", "selected");
+                        form.render('select');
+                    }
+                });
+            })
+        }
+
+        form.on('switch(statusSwitch)', function (data) {
+            let status = this.checked ? "0" : "1";
+            $("#status").val(status);
+        });
+
+        form.on('select', function (data) {
+            console.log("name", $("#parent_id").find("option:selected").text(), "\tvalue: ", data.value);
+            $('#typeId').val(data.value);
+            $('#typeName').val($("#parent_id").find("option:selected").text());
+        });
+
+        form.on("submit(edit)", function (data) {
+            okUtils.ajax("/api/website/detail", "put", JSON.stringify(data.field), true).done(function (response) {
+                console.log(response);
+                okLayer.greenTickMsg("编辑成功", function () {
+                    parent.layer.close(parent.layer.getFrameIndex(window.name));
+                });
+            }).fail(function (error) {
+                console.log(error)
+            });
+            return false;
+        });
+    })
+</script>
+</body>
+</html>

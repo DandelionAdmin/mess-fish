@@ -1,0 +1,104 @@
+server:
+  port: 8082
+  servlet:
+    encoding:
+      charset: utf-8
+      enabled: true
+  # 下面是配置undertow作为服务器的参数
+  undertow:
+    # 是否打开 undertow 日志，默认为 false
+    accesslog:
+      enabled: false
+      dir: logs
+    # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+    io-threads: 4
+    # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+    worker-threads: 20
+    #设置 HTTP POST 内容的最大长度，默认不做限制
+    max-http-post-size: 0
+
+# Chaos 配置
+chaos:
+  waf:
+    xss:
+      enabled: true
+
+
+# Spring 配置
+spring:
+  application:
+    name: website
+  main:
+    allow-bean-definition-overriding: true
+  # SQL版本管理
+  flyway:
+    enabled: true
+    ## 编码格式，默认UTF-8
+    encoding: UTF-8
+    # 迁移前校验 SQL 文件是否存在问题
+    validate-on-migrate: true
+    # 生产环境一定要关闭
+    clean-disabled: true
+    # 校验路径下是否存在 SQL 文件
+    check-location: true
+    # 最开始已经存在表结构，且不存在 flyway_schema_history 表时，需要设置为 true
+    baseline-on-migrate: false
+    # 基础版本 0
+    baseline-version: 1
+  datasource:
+    # 填写你数据库的url、登录名、密码和数据库名
+    url: jdbc:mysql:///navigation?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 使用阿里的Druid连接池
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 连接池的配置信息
+      db-type: mysql
+      # 初始化大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存时间
+      minEvictableIdleTimeMillis: 300000
+      #用来检测连接是否有效的sql 必须是一个查询语句
+      #mysql中为 select 'x'
+      #oracle中为 select 1 from dual
+      validationQuery: select 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # 打开 PSCache，并且指定每个连接上 PSCache 的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #开启拦截
+      filter:
+        config:
+          enabled: true
+      # 配置监控统计拦截的 Filter，去掉后监控界面 SQL 无法统计，wall 用于防火墙
+      filters: stat,wall
+      # 通过 connection-properties 属性打开 mergeSql 功能；慢 SQL 记录
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+
+# 配置sql打印日志
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-value: 0
+      logic-not-delete-value: 1
+  mapper-locations: classpath:/mapper/*.xml
+
+# 日志配置
+logger:
+  path: logs

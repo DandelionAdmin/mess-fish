@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>添加站点</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="../../css/oksub.css">
+	<script type="text/javascript" src="../../lib/loading/okLoading.js"></script>
+	<script type="text/javascript" src="../../js/api.js"></script>
+	<script type="text/javascript" src="../../js/time.js"></script>
+</head>
+<body>
+<div class="ok-body">
+	<!--form表单-->
+	<form class="layui-form layui-form-pane ok-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label">网站名字</label>
+			<div class="layui-input-block">
+				<input type="text" name="name" placeholder="请输入网站名字" autocomplete="off" class="layui-input" lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">网站链接</label>
+			<div class="layui-input-block">
+				<input type="text" name="url" placeholder="请输入网站链接" autocomplete="off" class="layui-input" lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">网站图标</label>
+			<div class="layui-input-block">
+				<input type="text" name="icon" placeholder="请输入网站图标" autocomplete="off" class="layui-input" lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">网站状态</label>
+			<div class="layui-input-block">
+				<input type="checkbox" checked=""  lay-skin="switch" lay-filter="statusSwitch" lay-text="开启|关闭">
+				<input type="hidden" value="0" id="status" name="status"  autocomplete="off" class="layui-input" lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">网站类型</label>
+			<div class="layui-input-inline">
+				<select id="parent_id" lay-verify="required" lay-search="">
+					<option value="">选择网站类型</option>
+				</select>
+			</div>
+			<input type="hidden" id="typeId" name="typeId" placeholder="请输入课程编号" autocomplete="off" class="layui-input" lay-verify="required">
+			<input type="hidden" id="typeName" name="typeName" placeholder="请输入课程名字" autocomplete="off" class="layui-input"  lay-verify="required">
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="add">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<!--js逻辑-->
+<script src="../../lib/layui/layui.js"></script>
+<script>
+	layui.use(["element", "jquery", "form", "laydate", "okLayer", "okUtils", "upload"], function () {
+		let form = layui.form;
+		let okLayer = layui.okLayer;
+		let okUtils = layui.okUtils;
+		let $ = layui.jquery;
+		okLoading.close();
+
+		okUtils.ajax("/api/website/type/select", "get", {}, true).done(function (response) {
+			let data = response.data;
+			// option进行拼接
+			var option = '';
+
+			console.log("select 列表：",response);
+
+			for(var i in data){
+				option += "<option value='"+data[i]['id']+"'>"+data[i]['name']+"</option>";
+			}
+			// 给select节点追加
+			$('#parent_id').append(option);
+			// form渲染
+			form.render('select')
+		}).fail(function (error) {
+			console.log(error)
+		});
+
+		form.on('select', function(data){
+			console.log("name",$("#parent_id").find("option:selected").text(),"\tvalue: ",data.value);
+			$('#typeId').val(data.value);
+			$('#typeName').val($("#parent_id").find("option:selected").text());
+		});
+
+		form.on('switch(statusSwitch)', function(data){
+			let status = this.checked ? "0" : "1";
+			$("#status").val(status);
+		});
+
+		form.on("submit(add)", function (data) {
+			data.field["time"] = timeToTimeStamp(new Date());
+			okUtils.ajax("/api/website/detail", "post", JSON.stringify(data.field), true).done(function (response) {
+				okLayer.greenTickMsg("添加成功", function () {
+					parent.layer.close(parent.layer.getFrameIndex(window.name));
+				});
+			}).fail(function (error) {
+				console.log(error)
+			});
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

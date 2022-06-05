@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>添加用户</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="../../css/oksub.css">
+	<script type="text/javascript" src="../../lib/loading/okLoading.js"></script>
+	<script type="text/javascript" src="../../js/api.js"></script>
+</head>
+<body>
+<div class="ok-body">
+	<!--form表单-->
+	<form class="layui-form layui-form-pane ok-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label">邮箱</label>
+			<div class="layui-input-block">
+				<input type="text" name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input"
+					   lay-verify="email">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">手机号</label>
+			<div class="layui-input-block">
+				<input type="text" name="phone" placeholder="请输入手机号" autocomplete="off" class="layui-input"
+					   lay-verify="required|phone">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">姓名</label>
+			<div class="layui-input-block">
+				<input type="text" name="nickname" placeholder="请输入姓名" autocomplete="off" class="layui-input"
+					   lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">密码</label>
+			<div class="layui-input-block">
+				<input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input"
+				       lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">年龄</label>
+			<div class="layui-input-block">
+				<input type="text" name="age" placeholder="请输入年龄" autocomplete="off" class="layui-input"
+					   lay-verify="required">
+			</div>
+		</div>
+<!--		<div class="layui-form-item">-->
+<!--			<label class="layui-form-label">角色</label>-->
+<!--			<div class="layui-input-block">-->
+<!--				<select name="role">-->
+<!--					<option value="0">管理员</option>-->
+<!--					<option value="1">教师</option>-->
+<!--					<option value="2">学员</option>-->
+<!--				</select>-->
+<!--			</div>-->
+<!--		</div>-->
+		<div class="layui-form-item">
+			<label class="layui-form-label">头像:</label>
+			<div class=" layui-input-block">
+				<input type="hidden" name="avatar" placeholder="请输入头像" autocomplete="off" class="layui-input"
+					   lay-verify="required" id="img-input">
+				<button type="button" id="uploadButton" style="width:100px;height:100px;border-radius:100px;margin-left: 30px">
+					<img style="width:100px;height:100px;border-radius:100px"  id="image"/>
+				</button>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">性别:</label>
+			<div class="layui-input-block">
+				<input type="radio" name="sex" value="0" title="男">
+				<input type="radio" name="sex" value="1" title="女" checked>
+			</div>
+		</div>
+<!--		<div class="layui-form-item" id="sign">-->
+<!--			<label class="layui-form-label">简介:</label>-->
+<!--			<div class="layui-input-block">-->
+<!--				<textarea placeholder="请输入内容" name="sign" class="layui-textarea"></textarea>-->
+<!--			</div>-->
+<!--		</div>-->
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="add">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<!--js逻辑-->
+<script src="../../lib/layui/layui.js"></script>
+<script>
+	layui.use(["element", "jquery" , "form", "laydate", "okLayer", "okUtils", "upload"], function () {
+		let form = layui.form;
+		let okLayer = layui.okLayer;
+		let okUtils = layui.okUtils;
+		let upload = layui.upload;
+		let $ = layui.jquery;
+		let role = getQueryString("role");
+
+		if (role != "1"){
+			//隐藏div
+			$("#sign").attr("style","display:none;");
+		}
+
+		okLoading.close();
+		form.verify({
+			phone: [/^1\d{10}$/, "手机号格式不正确"]
+		});
+
+		//上传图片
+		upload.render({
+			elem: '#uploadButton', //绑定元素
+			url:  'https://image.coderlab.cn/api/v1/image', //上传接口
+			done: function(res){
+				// console.log(res)
+				let path = res.data.url;
+				console.log("path:" + path)
+				$('#image').attr('src', path);
+				$('#img-input').attr('value', path);
+				//上传完毕回调
+			},
+			error: function(){
+				//请求异常回调
+				layer.msg("头像上传失败", {icon: 7, time: 2000});
+			}
+		});
+
+		form.on("submit(add)", function (data) {
+			data.field["role"] = role;
+			console.log("update：",data.field);
+			okUtils.ajax("/api/user", "post", JSON.stringify(data.field), true).done(function (response) {
+				console.log(response);
+				okLayer.greenTickMsg("添加成功", function () {
+					parent.layer.close(parent.layer.getFrameIndex(window.name));
+				});
+			}).fail(function (error) {
+				console.log(error)
+			});
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

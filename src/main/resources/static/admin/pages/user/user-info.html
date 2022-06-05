@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>个人中心</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="../../css/oksub.css">
+	<script type="text/javascript" src="../../lib/loading/okLoading.js"></script>
+</head>
+<body>
+<div class="ok-body">
+	<!--form表单-->
+	<form class="layui-form ok-form" lay-filter="filter">
+		<div class="layui-form-item">
+			<label class="layui-form-label">邮箱</label>
+			<div class="layui-input-block">
+				<input type="hidden" name="id" placeholder="请输入id" autocomplete="off" class="layui-input" id="user-id">
+				<input type="text" name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input" lay-verify="email">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">昵称</label>
+			<div class="layui-input-block">
+				<input type="text" name="nickname" placeholder="请输入真实姓名" autocomplete="off" class="layui-input"
+					   lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">性别</label>
+			<div class="layui-input-block">
+				<input type="radio" name="sex" value="0" title="男">
+				<input type="radio" name="sex" value="1" title="女" checked>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">年龄</label>
+			<div class="layui-input-block">
+				<input type="text" name="age" placeholder="请输入真实年龄" autocomplete="off" class="layui-input"
+					   lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">手机号</label>
+			<div class="layui-input-block">
+				<input type="text" name="phone" placeholder="请输入手机号" autocomplete="off" class="layui-input"
+					   lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="edit">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<!--js逻辑-->
+<script src="../../lib/layui/layui.js"></script>
+<script>
+	layui.use(["element", "form", "laydate", "okLayer", "okUtils","jquery"], function () {
+		let form = layui.form;
+		let okLayer = layui.okLayer;
+		let okUtils = layui.okUtils;
+		let $ = layui.jquery;
+		let user = JSON.parse(localStorage.getItem("user"));
+		okLoading.close();
+
+		form.val("filter", user);
+
+		console.log("localStorage",user);
+		$("#user-id").attr('value',user.id);
+
+		form.on("submit(edit)", function (data) {
+			okUtils.ajax("/api/user", "put",JSON.stringify(data.field), true).done(function (response) {
+				console.log(response);
+				okLayer.greenTickMsg("修改个人信息成功", function () {
+					parent.layer.close(parent.layer.getFrameIndex(window.name));
+					user.nickname = data.field.nickname;
+					user.email = data.field.email;
+					user.sex = data.field.sex;
+					user.age = data.field.age;
+					user.phone = data.field.phone;
+					localStorage.setItem("user",JSON.stringify(user))
+				});
+			}).fail(function (error) {
+				console.log(error)
+			});
+			return false;
+		});
+	})
+</script>
+</body>
+</html>

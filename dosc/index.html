@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>偷渡鱼</title>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.css" />
+		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.2.3/jquery.min.js"></script>
+		<style type="text/css">
+			a {
+				text-decoration: none;
+			}
+			header {
+				position: fixed;
+				top: 0;
+				left: 2%;
+				width: 96%;
+				height: auto;
+				line-height: 35px;
+				margin: 0 auto;
+				padding: 10px 0;
+				font-size: 14px;
+				color: #fff;
+			}
+			
+			.left {
+				width: auto;
+				float: left;
+			}
+			
+			.left a {
+				color: #fff;
+				margin-right: 30px;
+				opacity: .9;
+			}
+			
+			#logo-img {
+				width: 90px;
+				height: 100%;
+				background: url(https://pic4.zhimg.com/80/v2-a47051e92cf74930bedd7469978e6c08_hd.png) no-repeat;
+				float: left;
+				overflow: hidden;
+				background-size: 100%;
+				border-radius: 4px;
+				cursor: pointer;
+				margin-right: 25px;
+				opacity: 1;
+			}
+			
+			#logo-img h1 {
+				text-indent: -500px;
+			}
+			
+			.right {
+				float: right;
+				height: 35px;
+				line-height: 35px;
+				position: relative;
+				text-align: right;
+			}
+			
+			.right .login {
+				display: inline-block;
+				color: #fff;
+				font-size: 30px;
+				width: 35px;
+				height: 35px;
+				text-decoration: none;
+				cursor: pointer;
+			}
+			.options{
+				background-color: white;
+			    color: black;
+			    border-radius: 3px;
+			    display: none;
+			    box-shadow: rgba(0, 0, 0, 0.176) 0 6px 12px;
+			}
+			.options a{
+				color: #c1c1c1;
+				text-decoration: none;
+			}
+			.option{
+				padding: 3px 10px;
+				cursor: pointer;
+			}
+			.option:hover{
+				background: #f3f3f3;
+			}
+			.main {
+				width: 1000px;
+				height: 490px;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				margin-top: -200px;
+				margin-left: -500px;
+			}
+			
+			#search {
+				width: 1000px;
+				height: 50px;
+				background: #fff;
+				border-radius: 40px;
+				box-sizing: border-box;
+				margin: 0 auto;
+				position: relative;
+			}
+			
+			#search-choice {
+				width: 45px;
+				height: 50px;
+				background-color: white;
+				float: left;
+				background-position: 12px 12px;
+				background-repeat: no-repeat;
+				position: relative;
+				border-radius: 40px 0 0 40px;
+			}
+			
+			#choice-btn {
+				width: 20px;
+				height: 20px;
+				margin: 14px 10px 0 15px;
+				cursor: pointer;
+				background-image: url(https://touduyu.com/assets/images/searchChoice/baidu.png);
+				background-repeat: no-repeat;
+			}
+			
+			#search-engin-list {
+				position: absolute;
+				top: 40px;
+				left: 0;
+				z-index: 50;
+				width: 130px;
+				height: auto;
+				overflow: hidden;
+				border: 1px solid #ccc;
+				background: #fff;
+				border-radius: 8px;
+				display: none;
+				box-shadow: rgba(0, 0, 0, 0.176) 0 6px 12px;
+			}
+			
+			#search-engin-list .engin {
+				width: 90%;
+			    height: 34px;
+			    line-height: 34px;
+			    color: #545454;
+			    cursor: pointer;
+			    overflow: hidden;
+			    font-size: 16px;
+			    padding-left: 10%;
+			}
+			#search-engin-list .engin:hover{
+				background-color: #f3f3f3;
+			}
+			#search-input {
+				width: 903px;
+				height: 50px;
+				float: left;
+				color: #afafaf;
+				font-size: 16px;
+				padding-left: 0;
+				color: #15120e;
+				border: none 0;
+				padding: 0;
+				outline: none;
+			}
+			
+			#search-submit {
+				width: 48px;
+				height: 50px;
+				border: 0;
+				background-color: #fff;
+				border-top-right-radius: 40px;
+				border-bottom-right-radius: 40px;
+				float: left;
+				cursor: pointer;
+				font-size: 20px;
+				outline: none;
+				color: #ccc;
+			}
+			
+			#search .keyword {
+				width: 700px;
+				display: none;
+				height: auto;
+				background: #fff;
+				position: absolute;
+				left: 30px;
+				top: 48px;
+				border: 1px solid #ccc;
+				z-index: 100;
+				border-bottom-left-radius: 10px;
+				border-bottom-right-radius: 10px;
+				overflow: hidden;
+			}
+			.sites {
+			    width: 100%;
+			    height: auto;
+			    float: left;
+			    margin: 20px auto 20px;
+			    border-radius: 5px;
+			    padding: 10px 0;
+			    background: rgba(245,245,245,0.6);
+			}
+			.site {
+			    width: 130px;
+			    height: 45px;
+			    line-height: 45px;
+			    float: left;
+			    display: block;
+			    font-size: 16px;
+			    color: #15120e;
+			    margin: 3px 12px 3px 15px;
+			    border-radius: 10px;
+			    border-top: 1px solid transparent;
+			    outline: 0;
+			    position: relative;
+			    padding-left: 9px;
+			}
+			.site:hover {
+			    box-shadow: 0 1px 2px #999;
+			    border-top: 1px solid #dfdfdf;
+			}
+			.site a {
+			    color: #353535;
+			    font-size: 15px; 
+			}
+			.site img {
+			    width: 20px;
+			    height: 20px;
+			    margin-right: 5px;
+			    vertical-align: middle;
+			}
+		</style>
+	</head>
+
+	<body style="background-image: url(https://static.touduyu.com/theme/1JzAYSSmOzS4WLiyerKKS2r9dB76vuaMPcL3fsS9.jpeg)">
+		<header>
+			<div class="left">
+				<a href="#" id="logo-img">
+					<h1>偷渡鱼 | 最好用的网址导航</h1>
+				</a>
+				<a href="#">趣站</a>
+			</div>
+			<div class="right">
+				<div class="login">
+					<i class="fa fa-bars"></i>
+				</div>
+				<div class="options">
+					<a href="#"><div class="option">登录/注册</div></a>
+					<a href="#"><div class="option">更换壁纸</div></a>
+				</div>
+			</div>
+		</header>
+		<div class="main">
+			<div id="search">
+				<div id="search-choice">
+					<div id="choice-btn" title="切换搜索引擎"></div>
+					<div id="search-engin-list">
+						<div class="engin" engin="baidu" key="wd" action="https://www.baidu.com/s">
+							<img src="https://touduyu.com/assets/images/searchChoice/baidu.png">
+							<span>百度</span>
+						</div>
+						<div class="engin" engin="google" key="q" action="https://www.google.com/search">
+							<img src="https://touduyu.com/assets/images/searchChoice/google.png">
+							<span>Google</span>
+						</div>
+						<div class="engin" engin="bing" key="q" action="https://cn.bing.com/search">
+							<img src="https://touduyu.com/assets/images/searchChoice/bing.png">
+							<span>必应</span>
+						</div>
+						<div class="engin" engin="cili" key="word" action="http://www.cilimao.cc/search">
+							<img src="https://touduyu.com/assets/images/searchChoice/cili.png">
+							<span>磁力搜索</span>
+						</div>
+						<div class="engin" engin="yingshi" key="key" action="https://neets.cc/search">
+							<img src="https://touduyu.com/assets/images/searchChoice/yingshi.png">
+							<span>影视搜索</span>
+						</div>
+						<div class="engin" engin="wangpan" key="q" action="http://www.pansou.com">
+							<img src="https://touduyu.com/assets/images/searchChoice/wangpan.png">
+							<span>网盘搜索</span>
+						</div>
+					</div>
+				</div>
+				<form action="https://www.baidu.com/s" method="GET" target="_blank" id="search-check">
+					<input type="text" placeholder="搜你想搜的" name="wd" id="search-input" autocomplete="off" autofocus="">
+					<button name="submit" id="search-submit"><i class="fa fa-search"></i></button>
+				</form>
+				<div class="keyword"></div>
+			</div>
+			<div class="sites" id="sites" style="background: rgba(255,255,255,1);">
+				<li class="site">
+					<a id="site-jingdong" href="https://union-click.jd.com/jdc?e=&amp;p=AyIGZRprFDJWWA1FBCVbV0IUWVALHFRBEwQAQB1AWQkrOE9SeUMcGD12aWQOXUBaQ1R2Dhd%2FHRkOIgdQGVsRChoFXRlrFQMTBlYSXRwDEjdlG1olSXwGZRteFwYWBFcdXhMyEgNSHF4cBRUEUh5bFjIVB1wrj6mAxZvBw%2Fe61KCpZStrFjIiN1UbaxUyTUMIRmsXAxMDXA%3D%3D" rel="nofollow" target="_blank">
+						<img src="https://static.touduyu.com/moresite/xiecheng.svg">
+						<span>京东商城</span>
+					</a>
+				</li>
+				<li class="site">
+					<a id="site-tianmao" href="https://s.click.taobao.com/t?e=m%3D2%26s%3DPoI7OCNhTfccQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMbaONP9rHP2W1aH1Hk3GeOjut5GXNVceBCPuRZXtVVIakZlzmDCV%2BxCGjPvwcURsQ53PLI70IiRVfkwHTg4TQaeOJ2XZVrYPybh9YVht%2FlWE5UoOeRlV%2BcEDqUOklvk43rHfv3%2BBYcPWXmPstG5W4bHGJe8N%2FwNpGw%3D%3D" rel="nofollow" target="_blank">
+						<img src="https://static.touduyu.com/moresite/xiecheng.svg">
+						<span>天猫</span>
+					</a>
+				</li>
+				<li class="site">
+					<a id="site-aitaobao" href="https://ai.taobao.com/?pid=mm_98351546_39616640_148628312" rel="nofollow" target="_blank">
+						<img src="https://static.touduyu.com/moresite/xiecheng.svg">
+						<span>爱淘宝</span>
+					</a>
+				</li>
+				<li class="site">
+					<a href="https://s.click.taobao.com/t?e=m%3D2%26s%3DyLfCOwHCjtMcQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAoc2ovsSxM2c0euDHY%2FMl0yjcjddOBYOxdks7Xvrj1sANw9E8Vp%2Bu06ceda7Z4Q66ab6h%2BauVgdyCEDNGBpwx5iM%2BhtH71aX6jbwk8Q7zPIoeEV%2BM%2BWE6mfU4MpwEDWbLSGFCzYOOqAQ" rel="nofollow" target="_blank">
+						<img src="https://static.touduyu.com/moresite/xiecheng.svg">
+						<span>聚划算</span>
+					</a>
+				</li>
+
+				<li class="site">
+					<a href="https://s.click.taobao.com/t?e=m%3D2%26s%3DFR%2BZuq5vY7IcQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMS4pn64oOlVEMMgx22UI05but5GXNVceBCPuRZXtVVIa7Mki9T7kbQOr39LusdupVk5U%2BEi82A4gU9jONtfgAYE735YeP4ao%2FPQho7GrRW4P5MRYl0%2FyOZHaxllc%2F1XJzBWo1gJlYVIGJPwiig1bxLPIQu5PdXpojKJn5AyUbPoV" rel="nofollow" target="_blank">
+						<img src="https://static.touduyu.com/moresite/xiecheng.svg">
+						<span>天猫超市</span>
+					</a>
+				</li>
+
+				<li class="site">
+					<a href="https://www.ctrip.com/?AllianceID=665756&amp;sid=1195985&amp;ouid=&amp;app=0101F00" rel="nofollow" target="_blank">
+						<img src="https://static.touduyu.com/moresite/xiecheng.svg">
+						<span>携程</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://weibo.com" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/xinlangweibo.png ">
+						<span>新浪微博</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://news.qq.com" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/tengxunxinwen.png ">
+						<span>腾讯新闻</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://jandan.net/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/jandan.png ">
+						<span>煎蛋</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.zhihu.com" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/zhihu.png ">
+						<span>知乎</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.douban.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/douban.png ">
+						<span>豆瓣</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.mafengwo.cn/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/mafengwo.png ">
+						<span>马蜂窝</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.iqiyi.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/n3DNk1nHLNbWY8st0n6AZ3NaVNbcF0Q1NBLwYUjQ.ico ">
+						<span>爱奇艺</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://v.qq.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/tengxunshipin.png ">
+						<span>腾讯视频</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.youku.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/youku.png ">
+						<span>优酷</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.bilibili.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/mr2g6Vbxo5fns5mm4kdVHTuZLMyw2oHi9OrVUmzW.svg ">
+						<span>哔哩哔哩</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.douyu.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/douyu.png ">
+						<span>斗鱼</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.huya.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/p85DKwocKoT05NSHmpKwk4ZzS4Hn2Xemkf9cYnO3.svg ">
+						<span>虎牙直播</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://music.163.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/wangyiyunyinyue.png ">
+						<span>网易云音乐</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.toutiao.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/1jqI9oMyOvoXtEttmYIyh1wXbgQ63VQ6OGAoOZYU.ico ">
+						<span>今日头条</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.acfun.cn" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/0nvrUfHTua5BhX4TeGhNZVi08hi1KRdpgUUuBXx9.svg ">
+						<span>AcFun</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://bbs.tianya.cn/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/GDKtDIxwY9Qt6gMbxqTZh7I8gDFjWZpJ2reoaAub.svg ">
+						<span>天涯论坛</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://tieba.baidu.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/piWd91har0EDAiMSyDPzku1DByuPJRGKW1Gakw0P.svg ">
+						<span>百度贴吧</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://pan.baidu.com" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/rDxT2BU1Yg1YqSeRRvDx7tLdOVQlB5ybO1kPPH38.ico ">
+						<span>百度网盘</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.qdaily.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/YAPY6hMvthg58Wi5ZIx8pQ25vIkvdYzHSYxCY20G.png ">
+						<span>好奇心日报</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://fanyi.baidu.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/baidufanyi.png ">
+						<span>百度翻译</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://mail.163.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/JtIoRnwFnhVRhknGpQWF0ykkoT1BOFaHBSjVs0l5.ico ">
+						<span>163邮箱</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://map.baidu.com" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/baiduditu.png ">
+						<span>百度地图</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.weather.com.cn/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/0HLw76NotzRGVRPCRJ23dqB8fMhTSyu3vhZHPk74.svg ">
+						<span>天气预报</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.58.com" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/58.png ">
+						<span>58同城</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.zol.com.cn" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/1565786746.jpg ">
+						<span>中关村在线</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.autohome.com.cn" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/K8lQewvBc78DS9kaEQLEx0Sw1A6y0tx6texfWpH5.ico ">
+						<span>汽车之家</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.eastmoney.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/1u7dfriQYElkTJcQmfMJo5hE2azEKVkKEKdHVtAF.svg ">
+						<span>东方财富</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://www.qidian.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/mExuHMZlyLCM3LwXkSap9UcV9jF7NKF2QHhzAxoz.ico ">
+						<span>起点中文网</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="http://www.4399.com/" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/OySZ63Q0IxylObRKDxlormKZRjbMfWfTmmvR908h.ico ">
+						<span>4399小游戏</span>
+					</a>
+				</li>
+				<li class="site drag">
+					<a href="https://s.click.taobao.com/t?e=m%3D2%26s%3DfWaVfJAlo%2FMcQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClApSsCm3ScA6IihMekbd4ko6jcjddOBYOxdks7Xvrj1sAjIC3Qzh56wnELeT4HsVybD3s9MhxE0q6rnF3ShV1XeF8isIqg9litAZn%2By0keumo%2BFRVR%2BN0IAn0BhT0qsom9HEqY%2Bakgpmw" rel="nofollow" target="_blank">
+						<img src=" https://static.touduyu.com/icon/CKhrMHhjN61YUuqIJ5xy5OCrdMq3AJVMheIRYRqm.svg ">
+						<span>阿里云</span>
+					</a>
+				</li>
+			</div>
+		</div>
+	</body>
+	<script>
+		var open = true;
+		var list = true;
+		$('#search-choice').click(function(){
+			if(open){
+				$('#search-engin-list').css('display','block');
+				open=!open;
+			}else{
+				$('#search-engin-list').css('display','none');
+				open=!open;
+			}	
+		})
+		$('.engin').click(function(){
+			var src = $(this).children('img').attr('src');
+			$('#choice-btn').css('background-image','url(' + src + ')');
+			var action = '请求地址';
+			$('#search-check').attr('action',action);
+		})
+		$('.login').click(function(){
+			if(list){
+				$('.options').css('display','block');
+				list=!list;
+			}else{
+				$('.options').css('display','none');
+				list=!list;
+			}	
+		})
+	</script>
+</html>
